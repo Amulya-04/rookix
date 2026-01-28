@@ -1,106 +1,113 @@
-import React from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function Player() {
-  const { id } = useParams(); // film id from URL
+  const { id } = useParams(); // 🎯 film ID from URL
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Film data passed from FilmDetails
-  const film = location.state;
+  const [film, setFilm] = useState(null);
+  const [error, setError] = useState("");
 
-  if (!film) {
+  // 🎬 Fetch film by ID
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/films/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Film not found");
+        return res.json();
+      })
+      .then((data) => setFilm(data))
+      .catch(() => setError("Video not available"));
+  }, [id]);
+
+  // ❌ Error state
+  if (error) {
     return (
-      <div style={styles.container}>
-        <h2>Video not available</h2>
-        <button style={styles.backBtn} onClick={() => navigate("/dashboard")}>
-          Back to Dashboard
-        </button>
+      <div style={styles.error}>
+        <h2>{error}</h2>
+        <button onClick={() => navigate("/dashboard")}>Back</button>
       </div>
     );
   }
 
+  // ⏳ Loading state
+  if (!film) {
+    return <div style={styles.loading}>Loading…</div>;
+  }
+
   return (
-    <div style={styles.container}>
-      {/* HEADER */}
-      <div style={styles.header}>
-        <button style={styles.backBtn} onClick={() => navigate(-1)}>
-          ⬅ Back
-        </button>
-        <h2 style={styles.title}>{film.title}</h2>
+    <div style={styles.page}>
+      {/* 🔙 Back */}
+      <button
+        style={styles.backBtn}
+        onClick={() => navigate(`/film-details/${film.id}`)}
+      >
+        ← Back
+      </button>
+
+      {/* 🎬 Film Info */}
+      <div style={styles.info}>
+        <h1>{film.title}</h1>
+        <p>
+          <b>Category:</b> {film.category}
+        </p>
+        <p style={styles.desc}>
+          {film.description || "No description available."}
+        </p>
       </div>
 
-      {/* VIDEO PLAYER */}
+      {/* ▶ Video Player */}
       <div style={styles.playerWrapper}>
-        <video
-          src={film.videoUrl}
-          controls
-          autoPlay
-          style={styles.video}
-        />
-      </div>
-
-      {/* DETAILS */}
-      <div style={styles.details}>
-        <h3>Description</h3>
-        <p>{film.description || "No description available."}</p>
-        <p style={styles.meta}>Category: {film.category}</p>
-        <p style={styles.meta}>Views: {film.views}</p>
-        <p style={styles.idText}>Film ID: {id}</p>
+        <video controls style={styles.video}>
+          {/* ✅ MOST IMPORTANT LINE */}
+          <source src={film.video_url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
   );
 }
 
+// ================== STYLES ==================
 const styles = {
-  container: {
+  page: {
+    background: "#0b0f19",
     minHeight: "100vh",
-    backgroundColor: "#0f172a",
+    padding: "30px",
     color: "white",
-    padding: "20px",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    gap: "15px",
-    marginBottom: "20px",
   },
   backBtn: {
-    background: "#2563eb",
-    border: "none",
+    background: "#ff0000",
     color: "white",
     padding: "8px 14px",
     borderRadius: "6px",
+    border: "none",
     cursor: "pointer",
+    marginBottom: "20px",
   },
-  title: {
-    fontSize: "22px",
+  info: {
+    maxWidth: "1000px",
+    marginBottom: "20px",
+  },
+  desc: {
+    opacity: 0.85,
+    lineHeight: "1.6",
   },
   playerWrapper: {
     display: "flex",
     justifyContent: "center",
-    marginBottom: "20px",
   },
   video: {
     width: "100%",
-    maxWidth: "900px",
+    maxWidth: "1100px",
     borderRadius: "12px",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+    background: "black",
   },
-  details: {
-    maxWidth: "900px",
-    margin: "0 auto",
-    background: "#020617",
-    padding: "16px",
-    borderRadius: "10px",
+  loading: {
+    padding: "40px",
+    color: "white",
   },
-  meta: {
-    opacity: 0.8,
-    marginTop: "6px",
-  },
-  idText: {
-    marginTop: "10px",
-    fontSize: "12px",
-    opacity: 0.6,
+  error: {
+    padding: "40px",
+    color: "white",
   },
 };

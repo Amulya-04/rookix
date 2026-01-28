@@ -6,18 +6,31 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Dummy credentials
-  const handleLogin = () => {
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("role", "admin");
-      localStorage.setItem("name", "Admin");
-      navigate("/dashboard");
-    } else if (username === "student" && password === "user123") {
-      localStorage.setItem("role", "user");
-      localStorage.setItem("name", "Student");
-      navigate("/dashboard");
-    } else {
-      alert("Invalid credentials");
+  // ✅ REAL BACKEND LOGIN (STORES ONLY WHAT BACKEND SENDS)
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      // ✅ STEP 2: FIX FRONTEND LOGIN STORAGE
+      if (data.message) {
+        // store ONLY backend values
+        localStorage.setItem("name", data.username);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("userId", data.userId);
+
+        navigate("/dashboard");
+      } else {
+        alert(data.error || "Login failed");
+      }
+    } catch (error) {
+      alert("Backend not running");
     }
   };
 

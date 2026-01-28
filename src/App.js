@@ -11,11 +11,12 @@ import FilmDetails from "./pages/FilmDetails/FilmDetails";
 import UploadFilm from "./pages/UploadFilm/UploadFilm";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Player from "./pages/Player/Player";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default redirect to home */}
+        {/* Default redirect */}
         <Route path="/" element={<Navigate to="/home" />} />
 
         {/* Public Pages */}
@@ -27,7 +28,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/search-results" element={<SearchResults />} />
         <Route path="/category/:name" element={<Category />} />
-        <Route path="/film-details" element={<FilmDetails />} />
+
+        {/* ✅ CRITICAL FIX: ID-BASED ROUTES */}
+        <Route path="/film-details/:id" element={<FilmDetails />} />
         <Route path="/player/:id" element={<Player />} />
 
         {/* Admin Pages */}

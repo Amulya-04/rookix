@@ -1,12 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar({ search, setSearch }) {
+export default function Navbar({ search, setSearch, userName, isAdmin }) {
   const navigate = useNavigate();
-  const role = localStorage.getItem("role"); // "user" or "admin"
-  const userName = localStorage.getItem("name"); // username
-  const isLoggedIn = !!role;
-  const isAdmin = role === "admin";
+
+  // ✅ Logged-in state comes from prop presence
+  const isLoggedIn = !!userName;
 
   const handleLogout = () => {
     localStorage.removeItem("role");
@@ -24,7 +23,7 @@ export default function Navbar({ search, setSearch }) {
       {/* Logo */}
       <div style={styles.logo}>🎬 StudentFlix</div>
 
-      {/* Right side items */}
+      {/* Right side */}
       <div style={styles.right}>
         <form onSubmit={handleSearchSubmit}>
           <input
@@ -40,17 +39,26 @@ export default function Navbar({ search, setSearch }) {
 
         {isLoggedIn ? (
           <>
-            <Link to="/profile" style={styles.profile}>{userName}</Link>
-            <button style={styles.logoutBtn} onClick={handleLogout}>Logout</button>
+            {/* ✅ STEP 4: USE PROP, NOT localStorage */}
+            <span style={{ color: "white", marginRight: "10px" }}>
+              {userName}
+            </span>
+
+            <button style={styles.logoutBtn} onClick={handleLogout}>
+              Logout
+            </button>
           </>
         ) : (
-          <Link to="/login" style={styles.loginBtn}>Login</Link>
+          <Link to="/login" style={styles.loginBtn}>
+            Login
+          </Link>
         )}
       </div>
     </nav>
   );
 }
 
+// ================== STYLES ==================
 const styles = {
   nav: {
     width: "92%",
@@ -68,7 +76,7 @@ const styles = {
     fontWeight: "bold",
   },
   right: {
-    marginLeft: "auto", // shifts everything to the right
+    marginLeft: "auto",
     display: "flex",
     gap: "15px",
     alignItems: "center",
@@ -86,11 +94,7 @@ const styles = {
     borderRadius: "6px",
     fontSize: "12px",
     fontWeight: "bold",
-  },
-  profile: {
     color: "white",
-    textDecoration: "none",
-    fontWeight: "bold",
   },
   loginBtn: {
     background: "red",

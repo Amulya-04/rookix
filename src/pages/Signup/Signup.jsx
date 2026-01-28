@@ -1,6 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  // ✅ State for inputs
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // ✅ REAL BACKEND SIGNUP
+  const handleSignup = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (data.message) {
+        alert(data.message);
+        navigate("/"); // go to home/login after signup
+      } else {
+        alert(data.error || "Signup failed");
+      }
+    } catch (error) {
+      alert("Backend not running");
+    }
+  };
+
   return (
     <>
       <style>{`
@@ -101,29 +131,56 @@ export default function Signup() {
           margin-top: 15px;
           color: white;
         }
+
+        .link span {
+          color: #ffeaa7;
+          cursor: pointer;
+          margin-left: 5px;
+        }
       `}</style>
 
       <div className="box">
         <h2>Create Account</h2>
 
         <div className="group">
-          <input type="text" required />
-          <label>Name</label>
+          <input
+            type="text"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <label>Username</label>
         </div>
 
         <div className="group">
-          <input type="email" required />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <label>Email</label>
         </div>
 
         <div className="group">
-          <input type="password" required />
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <label>Password</label>
         </div>
 
-        <button className="btn">Signup</button>
+        <button className="btn" onClick={handleSignup}>
+          Signup
+        </button>
 
-        <p className="link">Already have an account? Login from home</p>
+        {/* ✅ HOME NAVIGATION (PROFESSIONAL WAY) */}
+        <p className="link">
+          Already have an account?
+          <span onClick={() => navigate("/")}> Login from home</span>
+        </p>
       </div>
     </>
   );
