@@ -5,7 +5,7 @@ export default function Footer() {
     <footer style={styles.footer}>
 
       <div style={styles.bottom}>
-        <p>© {new Date().getFullYear()} StudentFlix. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Rookix. All rights reserved.</p>
       </div>
     </footer>
   );

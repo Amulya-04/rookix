@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar/Navbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 export default function UploadFilm() {
@@ -9,52 +8,23 @@ export default function UploadFilm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [genre, setGenre] = useState("");
+  const [director, setDirector] = useState("");
+  const [cast, setCast] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [video, setVideo] = useState(null);
 
-  // ✅ STEP 3: uploading state
-  const [uploading, setUploading] = useState(false);
-
-  // ✅ STEP 4: REPLACED handleSubmit
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (uploading) return; // prevent double click
-
-    if (!thumbnail || !video) {
-      alert("Please select both thumbnail and video files");
-      return;
-    }
-
-    setUploading(true);
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("category", genre);
-    formData.append("thumbnail", thumbnail);
-    formData.append("video", video);
-
-    try {
-      const res = await fetch("http://localhost:5000/api/films/upload", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || "Upload failed");
-      } else {
-        alert("🎉 Film uploaded successfully!");
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      alert("Upload failed");
-    } finally {
-      setUploading(false);
-    }
+    console.log({
+      title,
+      description,
+      genre,
+      director,
+      cast,
+      thumbnail,
+      video,
+    });
+    alert("Film data collected! Backend connection coming next.");
   };
 
   const categories = ["Drama", "College", "Documentary"];
@@ -62,13 +32,23 @@ export default function UploadFilm() {
   const isAdmin = role === "admin";
 
   return (
-    <div style={{ display: "flex", background: "#0f172a", color: "white" }}>
+    <div
+      style={{
+        display: "flex",
+        background: "#0f172a",
+        color: "white",
+        minHeight: "100vh",
+      }}
+    >
       {/* Sidebar */}
       <Sidebar categories={categories} isAdmin={isAdmin} />
 
       {/* Main Content */}
-      <div style={{ marginLeft: "240px", width: "100%" }}>
-        <Navbar isAdmin={isAdmin} />
+      <div style={{ marginLeft: "240px", width: "100%", padding: "40px" }}>
+        {/* Back Button */}
+        <button style={styles.backBtn} onClick={() => navigate(-1)}>
+          ← Back
+        </button>
 
         <div style={styles.container}>
           <h1 style={styles.title}>Upload New Film</h1>
@@ -81,7 +61,6 @@ export default function UploadFilm() {
               onChange={(e) => setTitle(e.target.value)}
               style={styles.input}
               required
-              disabled={uploading}
             />
 
             <textarea
@@ -90,56 +69,55 @@ export default function UploadFilm() {
               onChange={(e) => setDescription(e.target.value)}
               style={styles.textarea}
               required
-              disabled={uploading}
             />
 
             <input
               type="text"
-              placeholder="Genre (Drama, College, Documentary)"
+              placeholder="Genre (Drama, Sci-Fi, Comedy)"
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
               style={styles.input}
               required
-              disabled={uploading}
+            />
+
+            <input
+              type="text"
+              placeholder="Director Name"
+              value={director}
+              onChange={(e) => setDirector(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Popular Cast (eg:cast1,cast2...)"
+              value={cast}
+              onChange={(e) => setCast(e.target.value)}
+              style={styles.input}
+              required
             />
 
             <label style={styles.label}>Upload Thumbnail Image:</label>
             <input
               type="file"
-              accept="image/*"
               onChange={(e) => setThumbnail(e.target.files[0])}
               style={styles.file}
+              accept="image/*"
               required
-              disabled={uploading}
             />
 
             <label style={styles.label}>Upload Video File:</label>
             <input
               type="file"
-              accept="video/*"
               onChange={(e) => setVideo(e.target.files[0])}
               style={styles.file}
+              accept="video/*"
               required
-              disabled={uploading}
             />
 
-            {/* ✅ STEP 5: REPLACED BUTTON */}
-            <button
-              type="submit"
-              disabled={uploading}
-              style={{
-                background: uploading ? "#7f1d1d" : "#ff0000",
-                opacity: uploading ? 0.7 : 1,
-                cursor: uploading ? "not-allowed" : "pointer",
-                padding: "14px",
-                borderRadius: "8px",
-                fontWeight: "bold",
-                color: "white",
-                border: "none",
-                width: "100%",
-              }}
-            >
-              {uploading ? "Uploading…" : "Upload Film"}
+            <button type="submit" style={styles.btn}>
+              Upload Film
             </button>
           </form>
         </div>
@@ -148,21 +126,30 @@ export default function UploadFilm() {
   );
 }
 
-// ================== STYLES ==================
 const styles = {
+  backBtn: {
+    padding: "6px 12px",
+    marginBottom: "20px",
+    background: "#46ddd6",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   container: {
-    background: "black",
-    minHeight: "100vh",
+    background: "#111",
     padding: "40px",
+    borderRadius: "12px",
     color: "white",
+    width: "400px",
+    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
   },
   title: {
     marginBottom: "25px",
     textAlign: "center",
   },
   form: {
-    width: "400px",
-    margin: "auto",
     display: "flex",
     flexDirection: "column",
     gap: "15px",
@@ -191,5 +178,14 @@ const styles = {
     borderRadius: "8px",
     border: "1px solid #333",
     color: "white",
+  },
+  btn: {
+    padding: "12px",
+    background: "#46ddd6",
+    border: "none",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    color: "black",
   },
 };

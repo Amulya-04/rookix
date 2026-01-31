@@ -1,74 +1,53 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CategoryRow({ title, films, setFilms }) {
+export default function CategoryRow({ title, films, titleColor }) {
   const navigate = useNavigate();
 
-  // 🗑 DELETE HANDLER
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this film?")) return;
-
-    try {
-      const res = await fetch(`http://localhost:5000/api/films/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || "Failed to delete film");
-        return;
-      }
-
-      // ✅ Remove film from UI
-      setFilms((prev) => prev.filter((film) => film.id !== id));
-    } catch (err) {
-      console.error("DELETE ERROR:", err);
-      alert("Something went wrong while deleting");
-    }
-  };
-
   return (
-    <section style={{ marginBottom: "40px" }}>
-      <h2 style={{ marginBottom: "15px" }}>{title}</h2>
+    <section
+      style={{
+        marginBottom: "40px",
+        backgroundColor: "#000", // set page background to black
+        padding: "20px",
+        minHeight: "100vh", // optional: make it cover full page height
+      }}
+    >
+      <h2
+        style={{
+          marginBottom: "15px",
+          color: titleColor || "white", // ensure title is visible on black
+        }}
+      >
+        {title}
+      </h2>
 
-      <div style={styles.row}>
+      <div style={styles.grid}>
         {films.map((film) => (
-          <div key={film.id} style={styles.card}>
-            {/* 🎬 Thumbnail */}
-            <img
-              src={film.thumbnail_url}
-              alt={film.title}
-              style={styles.thumbnail}
-            />
+          <div
+            key={film.id}
+            style={{
+              ...styles.card,
+              background: "#111", // dark card background for contrast
+              color: "white",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+            }}
+          >
+            <div style={styles.thumbnail}>Thumbnail</div>
 
-            <h3 style={{ margin: "10px 0 4px" }}>{film.title}</h3>
+            <h3 style={{ margin: "8px 0" }}>{film.title}</h3>
+            <p style={{ fontSize: "14px", opacity: 0.7 }}>{film.category}</p>
+            <span style={{ fontSize: "12px", opacity: 0.7 }}>👁 {film.views}</span>
 
-            <p style={{ color: "#94a3b8", fontSize: "14px" }}>
-              {film.category}
-            </p>
-
-            {film.username && (
-              <p style={{ fontSize: "12px", color: "#64748b" }}>
-                By {film.username}
-              </p>
-            )}
-
-            {/* ▶ WATCH — ✅ CORRECT NAVIGATION */}
             <button
-              style={styles.watchButton}
-              onClick={() => navigate(`/film-details/${film.id}`)}
+              style={{
+                ...styles.button,
+                background: "#4fd1c5",
+                color: "#020617",
+              }}
+              onClick={() => navigate("/film-details", { state: film })}
             >
-              ▶ Watch
-            </button>
-
-            {/* 🗑 DELETE */}
-            <button
-              onClick={() => handleDelete(film.id)}
-              style={styles.deleteButton}
-            >
-              Delete
+              Watch
             </button>
           </div>
         ))}
@@ -77,47 +56,36 @@ export default function CategoryRow({ title, films, setFilms }) {
   );
 }
 
-// ================== STYLES ==================
 const styles = {
-  row: {
-    display: "flex",
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
     gap: "20px",
-    overflowX: "auto",
-    paddingBottom: "10px",
   },
   card: {
-    minWidth: "220px",
-    background: "#020617",
     padding: "15px",
     borderRadius: "12px",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
   thumbnail: {
-    width: "100%",
     height: "140px",
-    objectFit: "cover",
     borderRadius: "8px",
-    marginBottom: "8px",
+    marginBottom: "10px",
+    background: "#1e293b",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#888",
+    fontSize: "14px",
   },
-  watchButton: {
+  button: {
     width: "100%",
-    marginTop: "12px",
-    padding: "8px",
-    background: "red",
+    marginTop: "10px",
+    padding: "10px",
     border: "none",
-    borderRadius: "6px",
-    color: "white",
+    borderRadius: "8px",
     cursor: "pointer",
-    fontWeight: "600",
-  },
-  deleteButton: {
-    width: "100%",
-    marginTop: "8px",
-    padding: "6px",
-    background: "#1f2937",
-    color: "#f87171",
-    border: "1px solid #f87171",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "600",
+    fontWeight: "bold",
+    transition: "transform 0.2s ease",
   },
 };

@@ -1,58 +1,42 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import bgImg from "../../assets/login.jpg";
 
 export default function Signup() {
   const navigate = useNavigate();
 
-  // ✅ State for inputs
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ REAL BACKEND SIGNUP
-  const handleSignup = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (data.message) {
-        alert(data.message);
-        navigate("/"); // go to home/login after signup
-      } else {
-        alert(data.error || "Signup failed");
-      }
-    } catch (error) {
-      alert("Backend not running");
+  const handleSignup = () => {
+    if (!username || !email || !password) {
+      alert("Please fill all fields");
+      return;
     }
+
+    localStorage.setItem("role", "user");
+    localStorage.setItem("name", username);
+
+    alert(`New profile created with username: ${username}`);
+    navigate("/dashboard");
   };
 
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
       <style>{`
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: 'Poppins', sans-serif;
-          background: linear-gradient(-45deg, #ff6b6b, #5f27cd, #1dd1a1, #54a0ff);
-          background-size: 400% 400%;
-          animation: bgMove 10s ease infinite;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        @keyframes bgMove {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
         .box {
           width: 340px;
           padding: 40px;
@@ -132,10 +116,8 @@ export default function Signup() {
           color: white;
         }
 
-        .link span {
-          color: #ffeaa7;
-          cursor: pointer;
-          margin-left: 5px;
+        .link a:hover {
+          text-decoration: underline;
         }
       `}</style>
 
@@ -149,7 +131,7 @@ export default function Signup() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <label>Username</label>
+          <label>Name</label>
         </div>
 
         <div className="group">
@@ -176,12 +158,13 @@ export default function Signup() {
           Signup
         </button>
 
-        {/* ✅ HOME NAVIGATION (PROFESSIONAL WAY) */}
         <p className="link">
-          Already have an account?
-          <span onClick={() => navigate("/")}> Login from home</span>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "#ffeaa7", textDecoration: "none" }}>
+            Login
+          </Link>
         </p>
       </div>
-    </>
+    </div>
   );
 }

@@ -21,7 +21,7 @@ export default function Home() {
 
       {/* RIGHT SECTION */}
       <div style={styles.rightContent}>
-        <h1 style={styles.title}>StuFlix</h1>
+        <h1 style={styles.title}>Rookix</h1>
         <p style={styles.subtitle}>
           A simple streaming where students can upload short films, showcase creativity.
         </p>
@@ -86,7 +86,7 @@ const styles = {
 
   signupBtn: {
     padding: "10px 22px",
-    background: "#ff9999",
+    background: "#46ddd6",
     color: "black",
     border: "none",
     borderRadius: "8px",
@@ -119,7 +119,7 @@ const styles = {
 
   exploreBtn: {
     padding: "12px 30px",
-    background: "#ff9999",
+    background: "#46ddd6",
     color: "black",
     border: "none",
     borderRadius: "8px",

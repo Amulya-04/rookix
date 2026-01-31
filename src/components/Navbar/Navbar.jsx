@@ -1,11 +1,13 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import profileIcon from "../../assets/profile.png";        // profile icon
+import notificationIcon from "../../assets/notification.png"; // notification icon
 
-export default function Navbar({ search, setSearch, userName, isAdmin }) {
+export default function Navbar({ search, setSearch }) {
   const navigate = useNavigate();
-
-  // ✅ Logged-in state comes from prop presence
-  const isLoggedIn = !!userName;
+  const role = localStorage.getItem("role"); // "user" or "admin"
+  const userName = localStorage.getItem("name") || "User"; // fallback
+  const isLoggedIn = !!role;
 
   const handleLogout = () => {
     localStorage.removeItem("role");
@@ -21,10 +23,11 @@ export default function Navbar({ search, setSearch, userName, isAdmin }) {
   return (
     <nav style={styles.nav}>
       {/* Logo */}
-      <div style={styles.logo}>🎬 StudentFlix</div>
+      <div style={styles.logo}></div>
 
-      {/* Right side */}
+      {/* Right side items */}
       <div style={styles.right}>
+        {/* Search bar */}
         <form onSubmit={handleSearchSubmit}>
           <input
             type="text"
@@ -35,19 +38,32 @@ export default function Navbar({ search, setSearch, userName, isAdmin }) {
           />
         </form>
 
-        {isAdmin && <span style={styles.admin}>ADMIN</span>}
+        
 
-        {isLoggedIn ? (
+        {/* Notification and Profile icons */}
+        {isLoggedIn && (
           <>
-            {/* ✅ STEP 4: USE PROP, NOT localStorage */}
-            <span style={{ color: "white", marginRight: "10px" }}>
-              {userName}
-            </span>
+            <div
+              style={styles.iconWrapper}
+              onClick={() => alert("Notifications clicked!")}
+            >
+              <img src={notificationIcon} alt="Notifications" style={styles.icon} />
+            </div>
 
-            <button style={styles.logoutBtn} onClick={handleLogout}>
-              Logout
-            </button>
+            <div
+              style={styles.iconWrapper}
+              onClick={() => navigate("/profile")}
+            >
+              <img src={profileIcon} alt="Profile" style={styles.icon} />
+            </div>
           </>
+        )}
+
+        {/* Login / Logout buttons */}
+        {isLoggedIn ? (
+          <button style={styles.logoutBtn} onClick={handleLogout}>
+            Logout
+          </button>
         ) : (
           <Link to="/login" style={styles.loginBtn}>
             Login
@@ -58,7 +74,6 @@ export default function Navbar({ search, setSearch, userName, isAdmin }) {
   );
 }
 
-// ================== STYLES ==================
 const styles = {
   nav: {
     width: "92%",
@@ -76,7 +91,7 @@ const styles = {
     fontWeight: "bold",
   },
   right: {
-    marginLeft: "auto",
+    marginLeft: "auto", // shifts everything to the right
     display: "flex",
     gap: "15px",
     alignItems: "center",
@@ -88,17 +103,24 @@ const styles = {
     border: "none",
     outline: "none",
   },
-  admin: {
-    background: "red",
-    padding: "4px 10px",
-    borderRadius: "6px",
-    fontSize: "12px",
-    fontWeight: "bold",
-    color: "white",
+  
+  iconWrapper: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  icon: {
+    width: "20px",
+    height: "20px",
   },
   loginBtn: {
-    background: "red",
-    color: "#fff",
+    background: "#46ddd6",
+    color: "black",
     padding: "8px 16px",
     borderRadius: "5px",
     textDecoration: "none",
@@ -106,8 +128,8 @@ const styles = {
   },
   logoutBtn: {
     padding: "6px 12px",
-    background: "red",
-    color: "white",
+    background: "#46ddd6",
+    color: "black",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",

@@ -1,61 +1,41 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import bgImg from "../../assets/login.jpg";
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ REAL BACKEND LOGIN (STORES ONLY WHAT BACKEND SENDS)
-  const handleLogin = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      // ✅ STEP 2: FIX FRONTEND LOGIN STORAGE
-      if (data.message) {
-        // store ONLY backend values
-        localStorage.setItem("name", data.username);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("userId", data.userId);
-
-        navigate("/dashboard");
-      } else {
-        alert(data.error || "Login failed");
-      }
-    } catch (error) {
-      alert("Backend not running");
+  const handleLogin = () => {
+    if (username === "admin" && password === "admin123") {
+      localStorage.setItem("role", "admin");
+      localStorage.setItem("name", "Admin");
+      navigate("/dashboard");
+    } else if (username === "student" && password === "user123") {
+      localStorage.setItem("role", "user");
+      localStorage.setItem("name", "Student");
+      navigate("/dashboard");
+    } else {
+      alert("Invalid credentials");
     }
   };
 
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
       <style>{`
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: 'Poppins', sans-serif;
-          background: linear-gradient(-45deg, #ff6b6b, #5f27cd, #1dd1a1, #54a0ff);
-          background-size: 400% 400%;
-          animation: bgAnimation 10s ease infinite;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        @keyframes bgAnimation {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
         .login-box {
           width: 340px;
           padding: 40px;
@@ -171,11 +151,8 @@ export default function Login() {
         <div className="bottom-links">
           New user?
           <Link to="/signup">Signup</Link>
-          <br />
-          Admin?
-          <Link to="/admin">Admin Login</Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

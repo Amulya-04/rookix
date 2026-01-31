@@ -1,113 +1,158 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import bgImg from "../../assets/login.jpg";
 
-export default function Player() {
-  const { id } = useParams(); // 🎯 film ID from URL
+export default function Login() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [film, setFilm] = useState(null);
-  const [error, setError] = useState("");
-
-  // 🎬 Fetch film by ID
-  useEffect(() => {
-    fetch(`http://localhost:5000/api/films/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Film not found");
-        return res.json();
-      })
-      .then((data) => setFilm(data))
-      .catch(() => setError("Video not available"));
-  }, [id]);
-
-  // ❌ Error state
-  if (error) {
-    return (
-      <div style={styles.error}>
-        <h2>{error}</h2>
-        <button onClick={() => navigate("/dashboard")}>Back</button>
-      </div>
-    );
-  }
-
-  // ⏳ Loading state
-  if (!film) {
-    return <div style={styles.loading}>Loading…</div>;
-  }
+  const handleLogin = () => {
+    if (username === "admin" && password === "admin123") {
+      localStorage.setItem("role", "admin");
+      localStorage.setItem("name", "Admin");
+      navigate("/dashboard");
+    } else if (username === "student" && password === "user123") {
+      localStorage.setItem("role", "user");
+      localStorage.setItem("name", "Student");
+      navigate("/dashboard");
+    } else {
+      alert("Invalid credentials");
+    }
+  };
 
   return (
-    <div style={styles.page}>
-      {/* 🔙 Back */}
-      <button
-        style={styles.backBtn}
-        onClick={() => navigate(`/film-details/${film.id}`)}
-      >
-        ← Back
-      </button>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <style>{`
+        .login-box {
+          width: 340px;
+          padding: 40px;
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 20px;
+          backdrop-filter: blur(12px);
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+          animation: fadeIn 0.9s ease;
+        }
 
-      {/* 🎬 Film Info */}
-      <div style={styles.info}>
-        <h1>{film.title}</h1>
-        <p>
-          <b>Category:</b> {film.category}
-        </p>
-        <p style={styles.desc}>
-          {film.description || "No description available."}
-        </p>
-      </div>
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
 
-      {/* ▶ Video Player */}
-      <div style={styles.playerWrapper}>
-        <video controls style={styles.video}>
-          {/* ✅ MOST IMPORTANT LINE */}
-          <source src={film.video_url} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        .login-box h2 {
+          text-align: center;
+          margin-bottom: 25px;
+          color: white;
+        }
+
+        .input-group {
+          position: relative;
+          margin-bottom: 25px;
+        }
+
+        .input-group input {
+          width: 100%;
+          padding: 12px;
+          background: transparent;
+          color: #fff;
+          font-size: 16px;
+          border: none;
+          border-bottom: 2px solid #fff;
+          outline: none;
+        }
+
+        .input-group label {
+          position: absolute;
+          left: 5px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #eee;
+          pointer-events: none;
+          transition: 0.3s ease;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+          top: -6px;
+          font-size: 12px;
+          color: yellow;
+        }
+
+        .btn {
+          width: 100%;
+          padding: 12px;
+          border: none;
+          border-radius: 30px;
+          background: white;
+          color: #333;
+          font-size: 16px;
+          cursor: pointer;
+          transition: 0.3s ease;
+          margin-top: 8px;
+        }
+
+        .btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0px 6px 15px rgba(255,255,255,0.4);
+        }
+
+        .bottom-links {
+          text-align: center;
+          margin-top: 20px;
+          color: white;
+        }
+
+        .bottom-links a {
+          color: #ffeaa7;
+          text-decoration: none;
+          margin-left: 5px;
+        }
+      `}</style>
+
+      <div className="login-box">
+        <h2>Login</h2>
+
+        <div className="input-group">
+          <input
+            type="text"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <label>Username</label>
+        </div>
+
+        <div className="input-group">
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <label>Password</label>
+        </div>
+
+        <button className="btn" onClick={handleLogin}>
+          Login
+        </button>
+
+        <div className="bottom-links">
+          New user?
+          <Link to="/signup">Signup</Link>
+        </div>
       </div>
     </div>
   );
 }
-
-// ================== STYLES ==================
-const styles = {
-  page: {
-    background: "#0b0f19",
-    minHeight: "100vh",
-    padding: "30px",
-    color: "white",
-  },
-  backBtn: {
-    background: "#ff0000",
-    color: "white",
-    padding: "8px 14px",
-    borderRadius: "6px",
-    border: "none",
-    cursor: "pointer",
-    marginBottom: "20px",
-  },
-  info: {
-    maxWidth: "1000px",
-    marginBottom: "20px",
-  },
-  desc: {
-    opacity: 0.85,
-    lineHeight: "1.6",
-  },
-  playerWrapper: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  video: {
-    width: "100%",
-    maxWidth: "1100px",
-    borderRadius: "12px",
-    background: "black",
-  },
-  loading: {
-    padding: "40px",
-    color: "white",
-  },
-  error: {
-    padding: "40px",
-    color: "white",
-  },
-};
