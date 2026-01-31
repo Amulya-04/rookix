@@ -4,18 +4,16 @@ import { useNavigate } from "react-router-dom";
 export default function Profile() {
   const navigate = useNavigate();
 
-  // Example: get role and user info from localStorage (dummy)
   const [user, setUser] = useState({
     name: "John Doe",
     email: "johndoe@example.com",
-    role: "user", // or "admin"
+    role: "user",
     uploadedFilms: [
       { id: 1, title: "My Short Film" },
       { id: 2, title: "Campus Life Documentary" },
     ],
   });
 
-  // Example: simulate fetching from backend
   useEffect(() => {
     const savedName = localStorage.getItem("name");
     const savedEmail = localStorage.getItem("email");
@@ -31,16 +29,54 @@ export default function Profile() {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("name");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
+    navigate("/home");
+  };
+
+  const handlePasswordChange = () => {
+    navigate("/change-password"); // redirect to change password page
+  };
+
   return (
     <div style={styles.container}>
+      {/* Back Button */}
+      <button style={styles.backBtn} onClick={() => navigate(-1)}>
+        ← Back
+      </button>
+
       <h1>Profile</h1>
 
+      {/* User Info */}
       <div style={styles.card}>
         <p><strong>Name:</strong> {user.name}</p>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Role:</strong> {user.role}</p>
       </div>
 
+      {/* Action Buttons */}
+      <div style={styles.actions}>
+        <button style={styles.actionBtn} onClick={handlePasswordChange}>
+          Update Password
+        </button>
+
+        {user.uploadedFilms.length > 0 && (
+          <button
+            style={styles.actionBtn}
+            onClick={() => navigate("/my-uploads")}
+          >
+            My Uploads ({user.uploadedFilms.length})
+          </button>
+        )}
+
+        <button style={styles.actionBtn} onClick={handleLogout}>
+          Sign Out
+        </button>
+      </div>
+
+      {/* My Uploads Section (for admin only) */}
       {user.role === "admin" && (
         <div style={styles.adminSection}>
           <h2>Uploaded Films</h2>
@@ -55,10 +91,6 @@ export default function Profile() {
           )}
         </div>
       )}
-
-      <button style={styles.logout} onClick={() => navigate("/home")}>
-        Logout
-      </button>
     </div>
   );
 }
@@ -70,25 +102,40 @@ const styles = {
     color: "white",
     padding: "30px 40px",
   },
+  backBtn: {
+    padding: "6px 12px",
+    marginBottom: "20px",
+    background: "#46ddd6",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   card: {
     background: "#020617",
     padding: "20px",
     borderRadius: "8px",
     marginBottom: "30px",
   },
+  actions: {
+    display: "flex",
+    gap: "15px",
+    marginBottom: "30px",
+  },
+  actionBtn: {
+    padding: "10px 16px",
+    background: "#1e293b",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   adminSection: {
     background: "#020617",
     padding: "20px",
     borderRadius: "8px",
     marginBottom: "30px",
-  },
-  logout: {
-    padding: "10px 20px",
-    background: "red",
-    border: "none",
-    borderRadius: "8px",
-    color: "white",
-    cursor: "pointer",
-    fontWeight: "bold",
   },
 };

@@ -1,28 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import bgImg from "../../assets/login.jpg";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignup = () => {
+    if (!username || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    localStorage.setItem("role", "user");
+    localStorage.setItem("name", username);
+
+    alert(`New profile created with username: ${username}`);
+    navigate("/dashboard");
+  };
+
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
       <style>{`
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: 'Poppins', sans-serif;
-          background: linear-gradient(-45deg, #ff6b6b, #5f27cd, #1dd1a1, #54a0ff);
-          background-size: 400% 400%;
-          animation: bgMove 10s ease infinite;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        @keyframes bgMove {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
         .box {
           width: 340px;
           padding: 40px;
@@ -101,30 +115,56 @@ export default function Signup() {
           margin-top: 15px;
           color: white;
         }
+
+        .link a:hover {
+          text-decoration: underline;
+        }
       `}</style>
 
       <div className="box">
         <h2>Create Account</h2>
 
         <div className="group">
-          <input type="text" required />
+          <input
+            type="text"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <label>Name</label>
         </div>
 
         <div className="group">
-          <input type="email" required />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <label>Email</label>
         </div>
 
         <div className="group">
-          <input type="password" required />
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <label>Password</label>
         </div>
 
-        <button className="btn">Signup</button>
+        <button className="btn" onClick={handleSignup}>
+          Signup
+        </button>
 
-        <p className="link">Already have an account? Login from home</p>
+        <p className="link">
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "#ffeaa7", textDecoration: "none" }}>
+            Login
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
   );
 }

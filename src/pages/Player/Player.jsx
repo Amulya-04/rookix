@@ -66,9 +66,9 @@ const styles = {
     marginBottom: "20px",
   },
   backBtn: {
-    background: "#2563eb",
+    background: "#46ddd6",
     border: "none",
-    color: "white",
+    color: "black",
     padding: "8px 14px",
     borderRadius: "6px",
     cursor: "pointer",

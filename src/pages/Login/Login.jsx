@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import bgImg from "../../assets/login.jpg";
 
 export default function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Dummy credentials
   const handleLogin = () => {
     if (username === "admin" && password === "admin123") {
       localStorage.setItem("role", "admin");
@@ -22,27 +22,20 @@ export default function Login() {
   };
 
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
       <style>{`
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: 'Poppins', sans-serif;
-          background: linear-gradient(-45deg, #ff6b6b, #5f27cd, #1dd1a1, #54a0ff);
-          background-size: 400% 400%;
-          animation: bgAnimation 10s ease infinite;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        @keyframes bgAnimation {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-
         .login-box {
           width: 340px;
           padding: 40px;
@@ -158,11 +151,8 @@ export default function Login() {
         <div className="bottom-links">
           New user?
           <Link to="/signup">Signup</Link>
-          <br />
-          Admin?
-          <Link to="/admin">Admin Login</Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

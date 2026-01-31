@@ -7,7 +7,11 @@ export default function SearchBar() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    navigate(`/search?query=${query}`);
+    const trimmedQuery = query.trim();
+    if (trimmedQuery !== "") {
+      // Redirect to Search Results page with query as URL param
+      navigate(`/search-results?query=${encodeURIComponent(trimmedQuery)}`);
+    }
   };
 
   return (

@@ -1,17 +1,29 @@
 import { useState } from "react";
-import Navbar from "../../components/Navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 export default function UploadFilm() {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [genre, setGenre] = useState("");
+  const [director, setDirector] = useState("");
+  const [cast, setCast] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
   const [video, setVideo] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ title, description, genre, thumbnail, video });
+    console.log({
+      title,
+      description,
+      genre,
+      director,
+      cast,
+      thumbnail,
+      video,
+    });
     alert("Film data collected! Backend connection coming next.");
   };
 
@@ -20,14 +32,23 @@ export default function UploadFilm() {
   const isAdmin = role === "admin";
 
   return (
-    <div style={{ display: "flex", background: "#0f172a", color: "white" }}>
-      
+    <div
+      style={{
+        display: "flex",
+        background: "#0f172a",
+        color: "white",
+        minHeight: "100vh",
+      }}
+    >
       {/* Sidebar */}
       <Sidebar categories={categories} isAdmin={isAdmin} />
 
       {/* Main Content */}
-      <div style={{ marginLeft: "240px", width: "100%" }}>
-        <Navbar isAdmin={isAdmin} />
+      <div style={{ marginLeft: "240px", width: "100%", padding: "40px" }}>
+        {/* Back Button */}
+        <button style={styles.backBtn} onClick={() => navigate(-1)}>
+          ← Back
+        </button>
 
         <div style={styles.container}>
           <h1 style={styles.title}>Upload New Film</h1>
@@ -55,6 +76,24 @@ export default function UploadFilm() {
               placeholder="Genre (Drama, Sci-Fi, Comedy)"
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Director Name"
+              value={director}
+              onChange={(e) => setDirector(e.target.value)}
+              style={styles.input}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="Popular Cast (eg:cast1,cast2...)"
+              value={cast}
+              onChange={(e) => setCast(e.target.value)}
               style={styles.input}
               required
             />
@@ -87,21 +126,30 @@ export default function UploadFilm() {
   );
 }
 
-
 const styles = {
+  backBtn: {
+    padding: "6px 12px",
+    marginBottom: "20px",
+    background: "#46ddd6",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   container: {
-    background: "black",
-    minHeight: "100vh",
+    background: "#111",
     padding: "40px",
+    borderRadius: "12px",
     color: "white",
+    width: "400px",
+    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
   },
   title: {
     marginBottom: "25px",
     textAlign: "center",
   },
   form: {
-    width: "400px",
-    margin: "auto",
     display: "flex",
     flexDirection: "column",
     gap: "15px",
@@ -133,11 +181,11 @@ const styles = {
   },
   btn: {
     padding: "12px",
-    background: "red",
+    background: "#46ddd6",
     border: "none",
     borderRadius: "8px",
     fontWeight: "bold",
     cursor: "pointer",
-    color: "white",
+    color: "black",
   },
 };

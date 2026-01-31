@@ -1,24 +1,50 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CategoryRow({ title, films }) {
+export default function CategoryRow({ title, films, titleColor }) {
   const navigate = useNavigate();
 
   return (
-    <section style={{ marginBottom: "40px" }}>
-      <h2 style={{ marginBottom: "15px" }}>{title}</h2>
+    <section
+      style={{
+        marginBottom: "40px",
+        backgroundColor: "#000", // set page background to black
+        padding: "20px",
+        minHeight: "100vh", // optional: make it cover full page height
+      }}
+    >
+      <h2
+        style={{
+          marginBottom: "15px",
+          color: titleColor || "white", // ensure title is visible on black
+        }}
+      >
+        {title}
+      </h2>
 
-      <div style={styles.row}>
+      <div style={styles.grid}>
         {films.map((film) => (
-          <div key={film.id} style={styles.card}>
+          <div
+            key={film.id}
+            style={{
+              ...styles.card,
+              background: "#111", // dark card background for contrast
+              color: "white",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+            }}
+          >
             <div style={styles.thumbnail}>Thumbnail</div>
 
             <h3 style={{ margin: "8px 0" }}>{film.title}</h3>
-            <p>{film.category}</p>
-            <span>👁 {film.views}</span>
+            <p style={{ fontSize: "14px", opacity: 0.7 }}>{film.category}</p>
+            <span style={{ fontSize: "12px", opacity: 0.7 }}>👁 {film.views}</span>
 
             <button
-              style={styles.button}
+              style={{
+                ...styles.button,
+                background: "#4fd1c5",
+                color: "#020617",
+              }}
               onClick={() => navigate("/film-details", { state: film })}
             >
               Watch
@@ -31,32 +57,35 @@ export default function CategoryRow({ title, films }) {
 }
 
 const styles = {
-  row: {
-    display: "flex",
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
     gap: "20px",
-    overflowX: "auto",
-    paddingBottom: "10px",
   },
   card: {
-    minWidth: "220px",
-    background: "#020617",
     padding: "15px",
-    borderRadius: "10px",
+    borderRadius: "12px",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
   thumbnail: {
-    height: "120px",
-    background: "#1e293b",
-    borderRadius: "6px",
+    height: "140px",
+    borderRadius: "8px",
     marginBottom: "10px",
+    background: "#1e293b",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#888",
+    fontSize: "14px",
   },
   button: {
     width: "100%",
     marginTop: "10px",
-    padding: "8px",
-    background: "red",
+    padding: "10px",
     border: "none",
-    borderRadius: "6px",
-    color: "white",
+    borderRadius: "8px",
     cursor: "pointer",
+    fontWeight: "bold",
+    transition: "transform 0.2s ease",
   },
 };
