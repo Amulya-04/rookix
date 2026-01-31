@@ -11,18 +11,15 @@ export default function SearchResults() {
   const initialQuery = params.get("query") || "";
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
-  // Filter films from ALL films
+  // Filter films based on query
   const filteredFilms = filmsData.filter(
     (film) =>
       film.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       film.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Update document title
   useEffect(() => {
-    document.title = searchQuery
-      ? `${searchQuery} - Search Results`
-      : "Search Results";
+    document.title = searchQuery ? `${searchQuery} - Search Results` : "Search Results";
   }, [searchQuery]);
 
   return (
@@ -44,7 +41,6 @@ export default function SearchResults() {
         />
       </div>
 
-      {/* No Results */}
       {filteredFilms.length === 0 ? (
         <p style={styles.noResult}>No films found</p>
       ) : (
@@ -55,7 +51,14 @@ export default function SearchResults() {
               style={styles.card}
               onClick={() => navigate("/film-details", { state: film })}
             >
-              <div style={{ height: "120px", background: "#1e293b", borderRadius: "6px", marginBottom: "10px" }}>
+              <div
+                style={{
+                  height: "120px",
+                  background: "#1e293b",
+                  borderRadius: "6px",
+                  marginBottom: "10px",
+                }}
+              >
                 Thumbnail
               </div>
               <h3>{film.title}</h3>
@@ -71,9 +74,27 @@ export default function SearchResults() {
 
 const styles = {
   container: { background: "#0f172a", minHeight: "100vh", color: "white", padding: "30px" },
+  backBtn: {
+    padding: "6px 12px",
+    marginBottom: "20px",
+    background: "#46ddd6",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
   title: { marginBottom: "20px" },
   searchWrapper: { marginBottom: "20px" },
-  searchInput: { width: "100%", padding: "12px 15px", borderRadius: "8px", border: "1px solid #444", background: "#111", color: "white", fontSize: "16px" },
+  searchInput: {
+    width: "100%",
+    padding: "12px 15px",
+    borderRadius: "8px",
+    border: "1px solid #444",
+    background: "#111",
+    color: "white",
+    fontSize: "16px",
+  },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" },
   card: { background: "#111", padding: "10px", borderRadius: "10px", cursor: "pointer" },
   genre: { color: "gray" },

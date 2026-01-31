@@ -1,157 +1,52 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import bgImg from "../../assets/login.jpg";
+import React from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-export default function Login() {
+export default function Player() {
+  const { id } = useParams(); // film id from URL
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const location = useLocation();
 
-  const handleLogin = () => {
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("role", "admin");
-      localStorage.setItem("name", "Admin");
-      navigate("/dashboard");
-    } else if (username === "student" && password === "user123") {
-      localStorage.setItem("role", "user");
-      localStorage.setItem("name", "Student");
-      navigate("/dashboard");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+  // Film data passed from FilmDetails
+  const film = location.state;
+
+  if (!film) {
+    return (
+      <div style={styles.container}>
+        <h2>Video not available</h2>
+        <button style={styles.backBtn} onClick={() => navigate("/dashboard")}>
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundImage: `url(${bgImg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        fontFamily: "Poppins, sans-serif",
-      }}
-    >
-      <style>{`
-        .login-box {
-          width: 340px;
-          padding: 40px;
-          background: rgba(255, 255, 255, 0.15);
-          border-radius: 20px;
-          backdrop-filter: blur(12px);
-          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-          animation: fadeIn 0.9s ease;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-box h2 {
-          text-align: center;
-          margin-bottom: 25px;
-          color: white;
-        }
-
-        .input-group {
-          position: relative;
-          margin-bottom: 25px;
-        }
-
-        .input-group input {
-          width: 100%;
-          padding: 12px;
-          background: transparent;
-          color: #fff;
-          font-size: 16px;
-          border: none;
-          border-bottom: 2px solid #fff;
-          outline: none;
-        }
-
-        .input-group label {
-          position: absolute;
-          left: 5px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #eee;
-          pointer-events: none;
-          transition: 0.3s ease;
-        }
-
-        .input-group input:focus ~ label,
-        .input-group input:valid ~ label {
-          top: -6px;
-          font-size: 12px;
-          color: yellow;
-        }
-
-        .btn {
-          width: 100%;
-          padding: 12px;
-          border: none;
-          border-radius: 30px;
-          background: white;
-          color: #333;
-          font-size: 16px;
-          cursor: pointer;
-          transition: 0.3s ease;
-          margin-top: 8px;
-        }
-
-        .btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0px 6px 15px rgba(255,255,255,0.4);
-        }
-
-        .bottom-links {
-          text-align: center;
-          margin-top: 20px;
-          color: white;
-        }
-
-        .bottom-links a {
-          color: #ffeaa7;
-          text-decoration: none;
-          margin-left: 5px;
-        }
-      `}</style>
-
-      <div className="login-box">
-        <h2>Login</h2>
-
-        <div className="input-group">
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <label>Username</label>
-        </div>
-
-        <div className="input-group">
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <label>Password</label>
-        </div>
-
-        <button className="btn" onClick={handleLogin}>
-          Login
+    <div style={styles.container}>
+      {/* HEADER */}
+      <div style={styles.header}>
+        <button style={styles.backBtn} onClick={() => navigate(-1)}>
+          ⬅ Back
         </button>
+        <h2 style={styles.title}>{film.title}</h2>
+      </div>
 
-        <div className="bottom-links">
-          New user?
-          <Link to="/signup">Signup</Link>
-        </div>
+      {/* VIDEO PLAYER */}
+      <div style={styles.playerWrapper}>
+        <video
+          src={film.videoUrl}
+          controls
+          autoPlay
+          style={styles.video}
+        />
+      </div>
+
+      {/* DETAILS */}
+      <div style={styles.details}>
+        <h3>Description</h3>
+        <p>{film.description || "No description available."}</p>
+        <p style={styles.meta}>Category: {film.category}</p>
+        <p style={styles.meta}>Views: {film.views}</p>
+        <p style={styles.idText}>Film ID: {id}</p>
       </div>
     </div>
   );
@@ -171,9 +66,9 @@ const styles = {
     marginBottom: "20px",
   },
   backBtn: {
-    background: "#2563eb",
+    background: "#46ddd6",
     border: "none",
-    color: "white",
+    color: "black",
     padding: "8px 14px",
     borderRadius: "6px",
     cursor: "pointer",
