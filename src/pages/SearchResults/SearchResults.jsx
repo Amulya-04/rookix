@@ -11,16 +11,7 @@ export default function SearchResults() {
   const initialQuery = params.get("query") || "";
   const [searchQuery, setSearchQuery] = useState(initialQuery);
 
-  // Update URL whenever searchQuery changes
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchQuery.trim()) {
-      params.set("query", searchQuery.trim());
-    }
-    navigate(`/search-results?${params.toString()}`, { replace: true });
-  }, [searchQuery, navigate]);
-
-  // Filter films based on query
+  // Filter films from ALL films
   const filteredFilms = filmsData.filter(
     (film) =>
       film.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -43,7 +34,6 @@ export default function SearchResults() {
 
       <h2 style={styles.title}>Search Results</h2>
 
-      {/* Search Input */}
       <div style={styles.searchWrapper}>
         <input
           type="text"
@@ -65,19 +55,7 @@ export default function SearchResults() {
               style={styles.card}
               onClick={() => navigate("/film-details", { state: film })}
             >
-              <div
-                style={{
-                  height: "120px",
-                  background: "#1e293b",
-                  borderRadius: "6px",
-                  marginBottom: "10px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontWeight: "bold",
-                }}
-              >
+              <div style={{ height: "120px", background: "#1e293b", borderRadius: "6px", marginBottom: "10px" }}>
                 Thumbnail
               </div>
               <h3>{film.title}</h3>
@@ -92,45 +70,12 @@ export default function SearchResults() {
 }
 
 const styles = {
-  container: {
-    background: "#0f172a",
-    minHeight: "100vh",
-    color: "white",
-    padding: "30px",
-  },
-  backBtn: {
-    padding: "6px 12px",
-    marginBottom: "20px",
-    background: "#46ddd6",
-    border: "none",
-    borderRadius: "6px",
-    color: "black",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
+  container: { background: "#0f172a", minHeight: "100vh", color: "white", padding: "30px" },
   title: { marginBottom: "20px" },
   searchWrapper: { marginBottom: "20px" },
-  searchInput: {
-    width: "100%",
-    padding: "12px 15px",
-    borderRadius: "8px",
-    border: "1px solid #444",
-    background: "#111",
-    color: "white",
-    fontSize: "16px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-    gap: "20px",
-  },
-  card: {
-    background: "#111",
-    padding: "10px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    transition: "transform 0.2s",
-  },
+  searchInput: { width: "100%", padding: "12px 15px", borderRadius: "8px", border: "1px solid #444", background: "#111", color: "white", fontSize: "16px" },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" },
+  card: { background: "#111", padding: "10px", borderRadius: "10px", cursor: "pointer" },
   genre: { color: "gray" },
   noResult: { marginTop: "50px", fontSize: "18px" },
 };

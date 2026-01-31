@@ -156,3 +156,56 @@ export default function Login() {
     </div>
   );
 }
+
+const styles = {
+  container: {
+    minHeight: "100vh",
+    backgroundColor: "#0f172a",
+    color: "white",
+    padding: "20px",
+  },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    marginBottom: "20px",
+  },
+  backBtn: {
+    background: "#2563eb",
+    border: "none",
+    color: "white",
+    padding: "8px 14px",
+    borderRadius: "6px",
+    cursor: "pointer",
+  },
+  title: {
+    fontSize: "22px",
+  },
+  playerWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "20px",
+  },
+  video: {
+    width: "100%",
+    maxWidth: "900px",
+    borderRadius: "12px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+  },
+  details: {
+    maxWidth: "900px",
+    margin: "0 auto",
+    background: "#020617",
+    padding: "16px",
+    borderRadius: "10px",
+  },
+  meta: {
+    opacity: 0.8,
+    marginTop: "6px",
+  },
+  idText: {
+    marginTop: "10px",
+    fontSize: "12px",
+    opacity: 0.6,
+  },
+};
